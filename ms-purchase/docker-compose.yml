@@ -1,0 +1,44 @@
+services:
+  ms-purchases:
+    build: .
+    ports:
+      - "8002:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=purchases-postgres
+      - DB_PORT=5432
+      - DB_DATABASE=purchases_db
+      - DB_USERNAME=purchases_user
+      - DB_PASSWORD=password
+      - AMQP_HOST=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=guest
+      - AMQP_PASSWORD=guest
+      - AMQP_VHOST=/
+    depends_on:
+      - purchases-postgres
+    networks:
+      - ms-network
+    command: >
+      /bin/sh -c "chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache && apache2-foreground"
+
+  purchases-postgres:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DB: purchases_db
+      POSTGRES_USER: purchases_user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - purchases_postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    networks:
+      - ms-network
+
+volumes:
+  purchases_postgres_data:
+
+networks:
+  ms-network:
+    external: true

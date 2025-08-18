@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Interfaz de administración de RabbitMQ
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      ms-network:
+        aliases:
+          - rabbitmq  # Alias para RabbitMQ en la red ms-network
+          
+networks:
+  ms-network:
+    external: true

@@ -1,0 +1,18 @@
+# Ignorar la carpeta storage
+storage/*
+
+# Ignorar las carpetas que no necesitas dentro del contenedor
+node_modules/
+vendor/
+
+# Ignorar archivos de configuración locales y de entornos específicos
+.env
+.env.local
+.env.*.local
+
+# Ignorar archivos de logs
+*.log
+
+# Ignorar archivos temporales del sistema operativo
+*.DS_Store
+*.swp

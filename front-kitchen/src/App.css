@@ -1,0 +1,33 @@
+body, html, #root {
+  margin: 0;
+  height: 100%;
+}
+
+.container2 {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 15px 0;
+  cursor: pointer;
+}
+
+.content {
+  flex: 1;
+  padding: 30px;
+  box-sizing: border-box;
+}

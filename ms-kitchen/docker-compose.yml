@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  ms-kitchen:
+    build: .
+    ports:
+      - "8000:80"
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=kitchen-postgres
+      - DB_PORT=5432
+      - DB_DATABASE=kitchen_db
+      - DB_USERNAME=kitchen_user
+      - DB_PASSWORD=password
+      - AMQP_HOST=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=guest
+      - AMQP_PASSWORD=guest
+      - AMQP_VHOST=/
+    depends_on:
+      - kitchen-postgres
+    volumes:
+      - .:/var/www/html
+    networks:
+      - ms-network
+    command: >
+      /bin/sh -c "chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache && apache2-foreground"
+  
+  kitchen-postgres:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DB: kitchen_db
+      POSTGRES_USER: kitchen_user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - kitchen_postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    networks:
+      - ms-network
+    
+volumes:
+  kitchen_postgres_data:
+
+networks:
+  ms-network:
+    external: true
